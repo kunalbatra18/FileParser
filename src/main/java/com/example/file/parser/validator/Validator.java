@@ -19,7 +19,7 @@ public abstract class Validator {
         if(next==null){
             return true;
         }
-        return validate(value);
+        return next.validate(value);
     }
 
 

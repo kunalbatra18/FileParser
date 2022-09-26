@@ -7,6 +7,7 @@ public class Order {
     private String currency;
     private String comment ;
     private String result;
+    private Integer lineNumber;
 
     public String getId() {
         return id;
@@ -56,15 +57,24 @@ public class Order {
         this.result = result;
     }
 
+    public Integer getLineNumber() {
+        return lineNumber;
+    }
+
+    public void setLineNumber(Integer lineNumber) {
+        this.lineNumber = lineNumber;
+    }
+
     @Override
     public String toString() {
-        return "{" +
+        return "Order{" +
                 "id='" + id + '\'' +
                 ", orderId='" + orderId + '\'' +
                 ", amount='" + amount + '\'' +
                 ", currency='" + currency + '\'' +
                 ", comment='" + comment + '\'' +
                 ", result='" + result + '\'' +
+                ", lineNumber=" + lineNumber +
                 '}';
     }
 }

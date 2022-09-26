@@ -1,14 +1,17 @@
 package com.example.file.parser.validator;
 
 import com.example.file.parser.builder.ValidatorBuilder;
+import com.example.file.parser.constants.Constants;
 import com.example.file.parser.dto.Order;
 import com.example.file.parser.reader.CsvFileReader;
 
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Consumer implements Runnable {
 
-    BlockingQueue<Order> obj;
+    private final BlockingQueue<Order> obj;
+    private AtomicInteger lineNumber = new AtomicInteger(0);
 
 
     public Consumer(BlockingQueue<Order> obj) {
@@ -19,14 +22,17 @@ public class Consumer implements Runnable {
     public void run() {
         try {
             while(true) {
-
                 Order order = obj.take();
+                lineNumber.getAndIncrement();
+                order.setLineNumber(lineNumber.get());
                 Validator numberValidator = ValidatorBuilder.getNumberValidator();
                 Validator nullValidator = ValidatorBuilder.getNullValidator();
                 StringBuilder errorMessage = new StringBuilder();
                 fireValidationRules(order, numberValidator, nullValidator, errorMessage);
                 if(errorMessage.length()!=0){
                     order.setResult(errorMessage.toString());
+                }else {
+                    order.setResult("OK");
                 }
 
                 System.out.println("order"+order);
@@ -37,10 +43,10 @@ public class Consumer implements Runnable {
     }
 
     private void fireValidationRules(Order order, Validator numberValidator, Validator nullValidator, StringBuilder errorMessage) {
-        validateAttribute(order.getAmount(), CsvFileReader.AMOUNT, numberValidator, errorMessage);
-        validateAttribute(order.getOrderId(),CsvFileReader.ORDER_ID, nullValidator, errorMessage);
-        validateAttribute(order.getComment(),CsvFileReader.COMMENT, nullValidator, errorMessage);
-        validateAttribute(order.getCurrency(),CsvFileReader.CURRENCY, nullValidator, errorMessage);
+        validateAttribute(order.getAmount(), Constants.AMOUNT, numberValidator, errorMessage);
+        validateAttribute(order.getOrderId(),Constants.ORDER_ID, nullValidator, errorMessage);
+        validateAttribute(order.getComment(),Constants.COMMENT, nullValidator, errorMessage);
+        validateAttribute(order.getCurrency(),Constants.CURRENCY, nullValidator, errorMessage);
     }
 
     private void validateAttribute(String value,String attributeName, Validator validator,
@@ -51,7 +57,7 @@ public class Consumer implements Runnable {
     }
 
     private void buildErrorMessage(String value, StringBuilder errorMessage,String attributeName) {
-        errorMessage.append("invalid value "+value+" for "+ attributeName);
+        errorMessage.append("invalid value "+value+" for "+ attributeName+" ");
     }
 
 

@@ -12,6 +12,6 @@ public class ValidatorBuilder {
     }
 
     public static Validator getNumberValidator(){
-       return Validator.create(new NumberValidator(),new NumberValidator());
+       return Validator.create(new NullValidator(),new NumberValidator());
     }
 }

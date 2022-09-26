@@ -1,5 +1,6 @@
 package com.example.file.parser.reader;
 
+import com.example.file.parser.constants.Constants;
 import com.example.file.parser.dto.Order;
 import com.example.file.parser.visitor.ValidationVisitor;
 import com.example.file.parser.visitor.Visitor;
@@ -23,11 +24,6 @@ import java.util.stream.IntStream;
 @Qualifier("csvFileReader")
 public class CsvFileReader implements FileReader, Visitor {
 
-    public static final String ORDER_ID = "Order ID";
-    public static final String CURRENCY = "currency";
-    public static final String COMMENT = "comment";
-    public static final String AMOUNT = "amount";
-
     private Visitor validationVisitor;
 
     public CsvFileReader(ValidationVisitor validationVisitor) {
@@ -50,11 +46,10 @@ public class CsvFileReader implements FileReader, Visitor {
 
         dataLineItems.stream().skip(1).forEach(strings -> {
           Order order =  new Order();
-          order.setId(strings[headerToIndex.get(ORDER_ID)]);
-          order.setOrderId(strings[headerToIndex.get(ORDER_ID)]);
-          order.setAmount(strings[headerToIndex.get(AMOUNT)]);
-          order.setCurrency(strings[headerToIndex.get(CURRENCY)]);
-          order.setComment(strings[headerToIndex.get(COMMENT)]);
+          order.setOrderId(strings[headerToIndex.get(Constants.ORDER_ID)]);
+          order.setAmount(strings[headerToIndex.get(Constants.AMOUNT)]);
+          order.setCurrency(strings[headerToIndex.get(Constants.CURRENCY)]);
+          order.setComment(strings[headerToIndex.get(Constants.COMMENT)]);
           performValidation(order);
         });
 
@@ -87,6 +82,7 @@ public class CsvFileReader implements FileReader, Visitor {
 
     @Override
     public void performValidation(Order order) {
+        order.setId(order.getOrderId());
         validationVisitor.performValidation(order);
     }
 }

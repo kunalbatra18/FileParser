@@ -2,6 +2,7 @@ package com.example.file.parser.reader;
 
 import com.example.file.parser.dto.Order;
 import com.example.file.parser.visitor.Visitor;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -36,6 +37,7 @@ public class JsonFileReader implements FileReader, Visitor {
 
     @Override
     public void performValidation(Order order) {
+        order.setId(order.getOrderId());
         validationVisitor.performValidation(order);
     }
 }
